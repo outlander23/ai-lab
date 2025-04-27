@@ -1,0 +1,13 @@
+#include <stdio.h>
+
+int main() {
+    int x = 10, y = 20;
+    float result;
+    result = x + y * 2 / (x - y);
+    if (result >= 0) {
+        printf("Result: %f\n", result);
+    } else {
+        printf("Negative result\n");
+    }
+    return 0;
+}
