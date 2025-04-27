@@ -1,0 +1,10 @@
+_myVar   
+abc123   
+A1b2C3  
+9abc     
+varName  
+x        
+Z9       
+__foo     
+foo_bar   
+foo123bar

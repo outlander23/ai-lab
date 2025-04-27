@@ -1,45 +1,42 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
+int yylex(void);
+int yyerror(char *s);
 %}
 
-%token NUMBER
-%left '+' '-'
-%left '*' '/'
-%left UMINUS
+%union {
+    char *str;
+}
+
+%token <str> VARIABLE
+%token EOL
+%token INVALID
 
 %%
 
 input:
     /* empty */
-  | input line
-  ;
+    | input line
+    ;
 
 line:
-    '\n'
-  | expr '\n'   { printf("%d\n", $1); }
-  ;
-
-expr:
-    NUMBER               { $$ = $1; }
-  | expr '+' expr        { $$ = $1 + $3; }
-  | expr '-' expr        { $$ = $1 - $3; }
-  | expr '*' expr        { $$ = $1 * $3; }
-  | expr '/' expr        {
-                            if ($3 == 0) {
-                              fprintf(stderr, "error: division by zero\n");
-                              exit(1);
-                            }
-                            $$ = $1 / $3;
-                          }
-  | '-' expr %prec UMINUS { $$ = -$2; }
-  | '(' expr ')'         { $$ = $2; }
-  ;
+      VARIABLE EOL { printf("Valid variable: %s\n", $1); free($1); }
+    | INVALID EOL  { printf("Invalid variable!\n"); }
+    | EOL          { /* ignore empty lines */ }
+    ;
 
 %%
 
-void yyerror(const char *s) { fprintf(stderr, "%s\n", s); }
+int main() {
+    printf("Enter variable names (Ctrl+D to exit):\n");
+    yyparse();
+    return 0;
+}
 
-int main(void) {
-    return yyparse();
+int yyerror(char *s) {
+    printf("Syntax Error: %s\n", s);
+    return 0;
 }
